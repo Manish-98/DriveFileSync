@@ -30,11 +30,12 @@ public class Playground {
             String DRIVE_FOLDER = "---folder_id---";
             int PAGE_SIZE = 10;
             String APPLICATION_NAME = "drive-file-sync";
+            InputStream credsFile = Playground.class.getResourceAsStream(CREDENTIAL_STORE);
 
 
             NetHttpTransport netHttpTransport = GoogleNetHttpTransport.newTrustedTransport();
             GsonFactory jsonFactory = GsonFactory.getDefaultInstance();
-            InputStream credsFile = Playground.class.getResourceAsStream(CREDENTIAL_STORE);
+
             GoogleClientSecrets clientSecrets = null;
             if (credsFile != null) {
                 clientSecrets = GoogleClientSecrets.load(jsonFactory, new InputStreamReader(credsFile));
@@ -45,6 +46,7 @@ public class Playground {
                     .build();
 
             LocalServerReceiver localServerReceiver = new LocalServerReceiver.Builder().setPort(8888).build();
+
             Credential credential = new AuthorizationCodeInstalledApp(googleAuth, localServerReceiver).authorize("user");
 
 
