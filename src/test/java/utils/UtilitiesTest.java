@@ -1,6 +1,5 @@
 package utils;
 
-import exception.ResourceNotFoundException;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -9,7 +8,6 @@ import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 class UtilitiesTest {

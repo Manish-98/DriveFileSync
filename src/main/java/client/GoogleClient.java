@@ -10,6 +10,8 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.drive.DriveScopes;
+import exception.InvalidCredentialsFileException;
+import exception.ResourceNotFoundException;
 import utils.Utilities;
 
 import java.io.File;
@@ -25,12 +27,19 @@ public class GoogleClient {
     private final String TOKEN_STORE = "src/main/resources/tokens";
 
 
-    public Credential getCredentials() {
+    public Credential getCredentials() throws ResourceNotFoundException, InvalidCredentialsFileException {
         try {
             NetHttpTransport netHttpTransport = GoogleNetHttpTransport.newTrustedTransport();
             GsonFactory jsonFactory = GsonFactory.getDefaultInstance();
             InputStream credentialsFile = Utilities.getResourceAsStream(CREDENTIAL_STORE);
-            GoogleClientSecrets secrets = GoogleClientSecrets.load(jsonFactory, new InputStreamReader(credentialsFile));
+            if (credentialsFile == null) throw new ResourceNotFoundException();
+
+            GoogleClientSecrets secrets;
+            try {
+                secrets = GoogleClientSecrets.load(jsonFactory, new InputStreamReader(credentialsFile));
+            } catch (IOException e) {
+                throw new InvalidCredentialsFileException();
+            }
 
             GoogleAuthorizationCodeFlow googleAuthorizationCodeFlow = new GoogleAuthorizationCodeFlow.Builder(netHttpTransport, jsonFactory, secrets, scopes)
                     .setDataStoreFactory(new FileDataStoreFactory(new File(TOKEN_STORE)))
